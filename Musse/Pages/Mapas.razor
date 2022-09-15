@@ -1,25 +1,32 @@
 ﻿@page "/Mapas"
+@inject IDbContextFactory<MuseoingContext> DbFactory
 
-<h1>Mapas</h1>
-<InputFile OnChange="Guardar" />
-
-<img src="data:@Mapa.Tipo;base64,@Mapa.base64" />
-
-aca va a haber un li de las imagenes previas chiquitas
-
-@if (MapasPrevios.MapasPrevios is not null)
+@if (Mapa.Base64 is not null)
 {
-    @foreach (MapaViewModel mapas in MapasPrevios.MapasPrevios)
-    {
+    <h1>Mapas</h1>
 
+    <InputFile OnChange="Guardar" />
+
+    <img src="data:@Mapa.Tipo;base64,@Mapa.Base64" />
+
+    @if(MapasPrevios.MapasPrevios is not null)
+    {
+        @foreach (MapaViewModel mapas in MapasPrevios.MapasPrevios)
+        {
+            <br>
+        }
     }
+}
+else
+{
+    <label>Cargando...</label>
 }
 
 @code {
 
     private class MapaViewModel 
     {
-        public string base64 { get; set; }
+        public string Base64 { get; set; }
         public string Tipo { get; set; }
         public string Nombre { get; set; }
     }
@@ -34,17 +41,13 @@ aca va a haber un li de las imagenes previas chiquitas
 
     protected override async Task OnInitializedAsync()
     {
-        var contextOptions = new DbContextOptionsBuilder<MuseoingContext>()
-            .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=aspnet-53bc9b9d-9d6a-45d4-8429-2a2761773502;Trusted_Connection=True;MultipleActiveResultSets=true")
-            .Options;
-
-        using var db = new MuseoingContext(contextOptions);
+        using var db = DbFactory.CreateDbContext();
 
         MapaActual? mapa = await db.Mapas.SingleOrDefaultAsync();
 
         if (mapa is not null)
         {
-            Mapa.base64 = mapa.MapaBase64;
+            Mapa.Base64 = mapa.MapaBase64;
             Mapa.Tipo = mapa.Tipo;
             Mapa.Nombre = mapa.Nombre;
         }
@@ -52,11 +55,7 @@ aca va a haber un li de las imagenes previas chiquitas
 
     private async void Guardar(InputFileChangeEventArgs e)
     {
-        var contextOptions = new DbContextOptionsBuilder<MuseoingContext>()
-            .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=aspnet-53bc9b9d-9d6a-45d4-8429-2a2761773502;Trusted_Connection=True;MultipleActiveResultSets=true")
-            .Options;
-
-        using var db = new MuseoingContext(contextOptions);
+        using var db = DbFactory.CreateDbContext();
 
         string mapaBase = await Base64Helper.StreamToBase64(e.File.OpenReadStream());
 
@@ -80,5 +79,9 @@ aca va a haber un li de las imagenes previas chiquitas
             db.Mapas.Add(mapaActual);
         }
         db.SaveChanges();
+
+        Mapa.Base64 = mapa.MapaBase64;
+        Mapa.Tipo = mapa.Tipo;
+        Mapa.Nombre = mapa.Nombre;
     }
 }
