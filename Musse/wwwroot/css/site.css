@@ -89,3 +89,14 @@ a:hover {
 .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
     margin-left: -0.7rem !important;
 }
+.dropdown-item {
+    padding: .4rem 1.3rem;
+}
+.nabvar a:hover {
+    color: #000000 !important;
+}
+.dropdown-item.active, .dropdown-item:active {
+    color: black;
+
+    background-color: white;
+}
