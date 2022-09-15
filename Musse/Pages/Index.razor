@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Microsoft.EntityFrameworkCore
 
 <form>
     <input class="text" @bind="Prueba.Prueba"/>
@@ -6,18 +7,56 @@
 
 <h2> @Prueba.Prueba </h2>
 
-<button @onclick="Guardar"></button>
+<button @onclick="Guardar">guardar</button>
 
 @code {
 
     private class PruebaViewModel 
     {
-        public string Prueba { get; set; } = " ";
+        public string Prueba { get; set; }
     }
 
     private PruebaViewModel Prueba { get; set; } = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        var contextOptions = new DbContextOptionsBuilder<MuseoingContext>()
+            .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=aspnet-53bc9b9d-9d6a-45d4-8429-2a2761773502;Trusted_Connection=True;MultipleActiveResultSets=true")
+            .Options;
+
+        using var db = new MuseoingContext(contextOptions);
+
+        MapaActual? mapa = await db.Mapa.SingleOrDefaultAsync();
+
+        if (mapa is not null)
+        {
+            Prueba.Prueba = mapa.MapaActualBase;
+        }
+    }
+
     private async void Guardar() 
     {
+        var contextOptions = new DbContextOptionsBuilder<MuseoingContext>()
+            .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=aspnet-53bc9b9d-9d6a-45d4-8429-2a2761773502;Trusted_Connection=True;MultipleActiveResultSets=true")
+            .Options;
+
+        using var db = new MuseoingContext(contextOptions);
+
+        MapaActual? mapa = await db.Mapa.SingleOrDefaultAsync();
+
+        if (mapa is not null)
+        {
+            mapa.MapaActualBase = Prueba.Prueba;
+        }
+        else
+        {
+            MapaActual mapaActual = new()
+            {
+                MapaActualBase = Prueba.Prueba
+            };
+
+            db.Mapa.Add(mapaActual);
+        }
+        db.SaveChanges();
     }
 }
