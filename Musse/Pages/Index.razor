@@ -7,7 +7,7 @@
 
 <h2> @Prueba.Prueba </h2>
 
-<button @onclick="Guardar">guardar</button>
+<button @onclick="@(() => { string base64 = Convert.ToBase64String; Guardar(base64); })">guardar</button>
 
 @code {
 
@@ -34,7 +34,7 @@
         }
     }
 
-    private async void Guardar() 
+    private async void Guardar(string mapaBase)
     {
         var contextOptions = new DbContextOptionsBuilder<MuseoingContext>()
             .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=aspnet-53bc9b9d-9d6a-45d4-8429-2a2761773502;Trusted_Connection=True;MultipleActiveResultSets=true")
@@ -46,13 +46,13 @@
 
         if (mapa is not null)
         {
-            mapa.MapaActualBase = Prueba.Prueba;
+            mapa.MapaActualBase = mapaBase;
         }
         else
         {
             MapaActual mapaActual = new()
             {
-                MapaActualBase = Prueba.Prueba
+                MapaActualBase = mapaBase
             };
 
             db.Mapa.Add(mapaActual);
