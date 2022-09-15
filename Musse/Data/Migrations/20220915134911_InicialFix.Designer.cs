@@ -12,7 +12,7 @@ using Musse.Data;
 namespace Musse.Data.Migrations
 {
     [DbContext(typeof(MuseoingContext))]
-    [Migration("20220915132056_InicialFix")]
+    [Migration("20220915134911_InicialFix")]
     partial class InicialFix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -234,7 +234,10 @@ namespace Musse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MapaActualId"), 1L, 1);
 
-                    b.Property<string>("MapaActualBase")
+                    b.Property<bool>("Actual")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MapaBase64")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -248,32 +251,7 @@ namespace Musse.Data.Migrations
 
                     b.HasKey("MapaActualId");
 
-                    b.ToTable("Mapa");
-                });
-
-            modelBuilder.Entity("Musse.Data.Models.MapaPrevio", b =>
-                {
-                    b.Property<int>("MapaPrevioId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MapaPrevioId"), 1L, 1);
-
-                    b.Property<string>("MapaPrevioBase")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tipo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MapaPrevioId");
-
-                    b.ToTable("MapaPrevios");
+                    b.ToTable("Mapas");
                 });
 
             modelBuilder.Entity("Musse.Data.Models.Recorrido", b =>
