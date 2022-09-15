@@ -1,9 +1,6 @@
 ﻿@page "/"
-@using Microsoft.EntityFrameworkCore
 
-<form>
-    <input class="text" @bind="Prueba.Prueba"/>
-</form>
+<InputFile OnChange="@(() => { string base64 = "nashe"; Guardar(base64); })" multiple />
 
 <h2> @Prueba.Prueba </h2>
 
