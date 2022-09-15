@@ -2,20 +2,22 @@
 {
     public static class Base64Helper
     {
-        public static string StreamToBase64(Stream stream)
+        public static async Task<string> StreamToBase64(Stream stream)
         {
-            return Convert.ToBase64String(ReadFully(stream));
+            //Para guardar imagenes las guardamos en base64 y para esto necesitamos un array para hacer la conversion
+            return Convert.ToBase64String(await StreamToArrayAsync(stream));
         }
 
-        private static byte[] ReadFully(Stream input)
+        private static async Task<byte[]> StreamToArrayAsync(Stream stream)
         {
-            byte[] buffer = new byte[16 * 1024];
+            //Este metodo convierte un stream en un array para que despues se convierta en un base64
+            byte[] bytes = new byte[16 * 1024];
             using (MemoryStream ms = new MemoryStream())
             {
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                int leer;
+                while ((leer = await stream.ReadAsync(bytes, 0, bytes.Length)) > 0)
                 {
-                    ms.Write(buffer, 0, read);
+                    ms.Write(bytes, 0, leer);
                 }
                 return ms.ToArray();
             }
