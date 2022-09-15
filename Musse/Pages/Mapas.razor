@@ -1,13 +1,15 @@
 ﻿@page "/Mapas"
 @inject IDbContextFactory<MuseoingContext> DbFactory
 
+
+    <h1>Mapas</h1>
+<div class="container-fluid">
+    <a class="text-black">Aqui se pueden subir las actualizaciones de los mapas</a>
+    </div>
+    <InputFile OnChange="Guardar" />
 @if (Mapa.Base64 is not null)
 {
-    <h1>Mapas</h1>
-
-    <InputFile OnChange="Guardar" />
-
-    <img src="data:@Mapa.Tipo;base64,@Mapa.Base64" />
+    <img class="marihuana" src="data:@Mapa.Tipo;base64,@Mapa.Base64" />
 
     @if(MapasPrevios.MapasPrevios is not null)
     {

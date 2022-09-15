@@ -100,3 +100,10 @@ a:hover {
 
     background-color: white;
 }
+.marihuana{
+max-height: 720px;
+max-width: 500px;
+}
+.container-fluid a {
+    text-decoration: none !important;
+}
