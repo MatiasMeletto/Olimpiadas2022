@@ -72,7 +72,7 @@ a, .btn-link {
     background-color: #400000 !important;
 }
 a, .btn-link {
-    color: white;
+    /*color: white;*/
 }
 .navbar-dark .navbar-brand {
     color: white;
