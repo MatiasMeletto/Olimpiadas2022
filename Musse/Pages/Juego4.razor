@@ -1,0 +1,30 @@
+﻿@page "/Juego4"
+<h3>Juego 4</h3>
+
+<br />
+<h3> De que tipo de auto crees que es este ruido de motor?</h3>
+<br />
+<audio src="audio.mp3" preload="none" controls></audio>
+<br />
+<form>
+    <div class="radio">
+        <input type="radio" name="tipomotor" id="F1"/>
+        <label for="F1">F1</label>
+        <br />
+        <input type="radio" name="tipomotor" id="Rally"/>
+        <label for="Rally">Rally</label>
+        <br />
+        <input type="radio" name="tipomotor" id="Deportivo"/>
+        <label for="Deportivo">Deportivo</label>
+        <br />
+        <input type="radio" name="tipomotor" id="Clasico"/>
+        <label for="Clasico">Clasico</label>
+        <br />
+        <button class="alert-primary" type="submit">Enviar</button>
+    </div>
+</form>
+
+@code {
+    int puntaje = 100;
+
+}
