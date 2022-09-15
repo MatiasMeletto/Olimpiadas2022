@@ -238,7 +238,7 @@ namespace Musse.Data.Migrations
 
                     b.HasKey("MapaActualId");
 
-                    b.ToTable("Mapa");
+                    b.ToTable("Mapa", (string)null);
                 });
 
             modelBuilder.Entity("Musse.Data.Models.MapaPrevio", b =>
@@ -255,7 +255,7 @@ namespace Musse.Data.Migrations
 
                     b.HasKey("MapaPrevioId");
 
-                    b.ToTable("MapaPrevios");
+                    b.ToTable("MapaPrevios", (string)null);
                 });
 
             modelBuilder.Entity("Musse.Data.Models.Recorrido", b =>
@@ -268,7 +268,7 @@ namespace Musse.Data.Migrations
 
                     b.HasKey("RecorridoId");
 
-                    b.ToTable("Recorridos");
+                    b.ToTable("Recorridos", (string)null);
                 });
 
             modelBuilder.Entity("Musse.Data.Models.Stand", b =>
@@ -297,7 +297,7 @@ namespace Musse.Data.Migrations
 
                     b.HasIndex("RecorridoId");
 
-                    b.ToTable("Stand");
+                    b.ToTable("Stand", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
