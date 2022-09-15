@@ -6,8 +6,7 @@ namespace Musse.Data
 {
     public class MuseoingContext : IdentityDbContext
     {
-        public DbSet<MapaActual> Mapa { get; set; }
-        public DbSet<MapaPrevio> MapaPrevios { get; set; }
+        public DbSet<MapaActual> Mapas { get; set; }
         public DbSet<Recorrido> Recorridos { get; set; }
         public MuseoingContext(DbContextOptions<MuseoingContext> options)
             : base(options)
