@@ -3,16 +3,30 @@
 
 <InputFile OnChange="Guardar" />
 
-<h2> @Prueba.Prueba </h2>
+<img src="data:@Mapa.Tipo;base64,@Mapa.base64" />
+
+aca va a haber un li de las imagenes previas chiquitas
+
+@foreach(MapaViewModel mapas in MapasPrevios.MapasPrevios)
+{
+   
+}
 
 @code {
 
-    private class PruebaViewModel 
+    private class MapaViewModel 
     {
-        public string Prueba { get; set; }
+        public string base64 { get; set; }
+        public string Tipo { get; set; }
     }
 
-    private PruebaViewModel Prueba { get; set; } = new();
+    private class MapasPreviosViewModel
+    {
+        public List<MapaViewModel> MapasPrevios { get;set; } 
+    }
+
+    private MapaViewModel Mapa { get; set; } = new();
+    private MapasPreviosViewModel MapasPrevios { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -26,7 +40,8 @@
 
         if (mapa is not null)
         {
-            Prueba.Prueba = mapa.MapaBase64;
+            Mapa.base64 = mapa.MapaBase64;
+            Mapa.Tipo = mapa.Tipo;
         }
     }
 
@@ -38,7 +53,7 @@
 
         using var db = new MuseoingContext(contextOptions);
 
-        string mapaBase = Base64Helper.StreamToBase64(e.File.OpenReadStream());
+        string mapaBase = await Base64Helper.StreamToBase64(e.File.OpenReadStream());
 
         MapaActual? mapa = await db.Mapas.SingleOrDefaultAsync();
 
@@ -52,7 +67,9 @@
         {
             MapaActual mapaActual = new()
             {
-                MapaBase64 = mapaBase
+                MapaBase64 = mapaBase,
+                Nombre = e.File.Name,
+                Tipo = e.File.ContentType
             };
 
             db.Mapas.Add(mapaActual);
