@@ -1,6 +1,104 @@
 ﻿@page "/Formula1"
+@inject IDbContextFactory<MuseoingContext> DbFactory
+
 <h3>Formula1</h3>
+<EditForm Model="stand">
+    Nombre: <input type="text" @bind="stand.Nombre"/>
+    Explicacion: <input type="text" @bind="stand.Explicacion"/>
+</EditForm>
+<button @onclick="CargarStand">Agregar stand</button>
+
+<br>
+<br>
+<br>
+@if (stands == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var stand in stands)
+        {
+            <h5>El stand n° @stand.StandId es: </h5>
+            <li>
+                <table >
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Explicacion</th>
+                            <th>Estado</th>
+                            <th>Seccion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <tr>
+                                <td>@stand.Nombre</td>
+                                <td>@stand.Explicacion</td>
+                                <td>@stand.Estado</td>
+                                <td>@stand.Seccion</td>
+                            </tr>
+                    </tbody>
+                </table>
+            </li>
+        }
+    </ul>
+}
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<h2>Editar</h2>
+@if (stands == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <select>
+        @foreach (var stand in stands)
+        {
+            <option value="@stand.StandId">@stand.Nombre</option>           
+        }
+    </select>
+    <a href="/EditarStand">Editar(esto deberia ser un button pero no se como se hace)</a>
+}
 
 @code {
 
+    private class StandViewModel
+    {
+        public string Nombre { get; set; }
+        public string Explicacion { get; set; }
+        public TipoSeccion Seccion { get; set; }
+    }
+
+    private StandViewModel stand { get; set; } = new();
+    private Stand[]? stands;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var db = DbFactory.CreateDbContext();
+
+        stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Formula1).ToArrayAsync();
+        stand.Seccion = TipoSeccion.Formula1;
+    }
+
+    private async void CargarStand()
+    {
+        using var db = DbFactory.CreateDbContext();
+
+        Stand standN = new Stand()
+        {
+            Nombre = stand.Nombre,
+            Explicacion = stand.Explicacion,
+            Seccion = stand.Seccion,
+            Estado = "Activo"
+        };
+
+        db.Stands.Add(standN);
+        db.SaveChanges();
+    }
 }

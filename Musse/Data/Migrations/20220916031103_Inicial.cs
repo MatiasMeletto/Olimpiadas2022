@@ -37,30 +37,30 @@ namespace Musse.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stand",
+                name: "Stands",
                 columns: table => new
                 {
                     StandId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Explicacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false),
-                    RecorridoId = table.Column<int>(type: "int", nullable: false)
+                    Seccion = table.Column<int>(type: "int", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RecorridoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Stand", x => x.StandId);
+                    table.PrimaryKey("PK_Stands", x => x.StandId);
                     table.ForeignKey(
-                        name: "FK_Stand_Recorridos_RecorridoId",
+                        name: "FK_Stands_Recorridos_RecorridoId",
                         column: x => x.RecorridoId,
                         principalTable: "Recorridos",
-                        principalColumn: "RecorridoId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "RecorridoId");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Stand_RecorridoId",
-                table: "Stand",
+                name: "IX_Stands_RecorridoId",
+                table: "Stands",
                 column: "RecorridoId");
         }
 
@@ -70,7 +70,7 @@ namespace Musse.Data.Migrations
                 name: "Mapas");
 
             migrationBuilder.DropTable(
-                name: "Stand");
+                name: "Stands");
 
             migrationBuilder.DropTable(
                 name: "Recorridos");

@@ -12,7 +12,7 @@ using Musse.Data;
 namespace Musse.Data.Migrations
 {
     [DbContext(typeof(MuseoingContext))]
-    [Migration("20220916001615_Inicial")]
+    [Migration("20220916031103_Inicial")]
     partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -275,8 +275,9 @@ namespace Musse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StandId"), 1L, 1);
 
-                    b.Property<bool>("Estado")
-                        .HasColumnType("bit");
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Explicacion")
                         .IsRequired()
@@ -286,14 +287,17 @@ namespace Musse.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RecorridoId")
+                    b.Property<int?>("RecorridoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Seccion")
                         .HasColumnType("int");
 
                     b.HasKey("StandId");
 
                     b.HasIndex("RecorridoId");
 
-                    b.ToTable("Stand");
+                    b.ToTable("Stands");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -351,9 +355,7 @@ namespace Musse.Data.Migrations
                 {
                     b.HasOne("Musse.Data.Models.Recorrido", "Recorrido")
                         .WithMany("Stands")
-                        .HasForeignKey("RecorridoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RecorridoId");
 
                     b.Navigation("Recorrido");
                 });

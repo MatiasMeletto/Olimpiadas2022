@@ -38,9 +38,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //Esto revisa si hay un mapa actual y lo muestra en primera plana
         using var db = DbFactory.CreateDbContext();
 
+        //Esto revisa si hay un mapa actual y lo muestra en primera plana
         MapaActual? mapaActual = await db.Mapas.Where(c => c.Actual == true).SingleOrDefaultAsync();
 
         if (mapaActual is not null)

@@ -8,6 +8,7 @@ namespace Musse.Data
     {
         public DbSet<MapaActual> Mapas { get; set; }
         public DbSet<Recorrido> Recorridos { get; set; }
+        public DbSet<Stand> Stands { get; set; }
 
         public MuseoingContext(DbContextOptions<MuseoingContext> options)
             : base(options)
