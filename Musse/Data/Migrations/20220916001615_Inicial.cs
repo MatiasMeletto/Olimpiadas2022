@@ -9,29 +9,19 @@ namespace Musse.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Mapa",
+                name: "Mapas",
                 columns: table => new
                 {
                     MapaActualId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MapaActualBase = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MapaBase64 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Actual = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Mapa", x => x.MapaActualId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MapaPrevios",
-                columns: table => new
-                {
-                    MapaPrevioId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MapaPrevioBase = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MapaPrevios", x => x.MapaPrevioId);
+                    table.PrimaryKey("PK_Mapas", x => x.MapaActualId);
                 });
 
             migrationBuilder.CreateTable(
@@ -77,10 +67,7 @@ namespace Musse.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Mapa");
-
-            migrationBuilder.DropTable(
-                name: "MapaPrevios");
+                name: "Mapas");
 
             migrationBuilder.DropTable(
                 name: "Stand");

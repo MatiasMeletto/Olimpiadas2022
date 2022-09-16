@@ -3,30 +3,24 @@
 
 
     <h1>Mapas</h1>
-<div class="container-fluid">
+    <div class="container-fluid">
     <a class="text-black">Aqui se pueden subir las actualizaciones de los mapas</a>
     </div>
     <InputFile OnChange="Guardar" />
-@if (Mapa.Base64 is not null)
-{
-    <img class="marihuana" src="data:@Mapa.Tipo;base64,@Mapa.Base64" />
+    <button @onclick="Reemplazar">Subir</button>
+    <img class="max" src="data:@mapaView.Tipo;base64,@mapaView.Base64" />
 
-    @if(MapasPrevios.MapasPrevios is not null)
+    @if(mapasPreviosView.MapasPrevios is not null)
     {
-        @foreach (MapaViewModel mapas in MapasPrevios.MapasPrevios)
+        @foreach (MapaViewModel m in mapasPreviosView.MapasPrevios)
         {
-            <br>
+            <img class="max" src="data:@m.Tipo;base64,@m.Base64" />
         }
     }
-}
-else
-{
-    <label>Cargando...</label>
-}
 
 @code {
 
-    private class MapaViewModel 
+    private class MapaViewModel
     {
         public string Base64 { get; set; }
         public string Tipo { get; set; }
@@ -35,55 +29,74 @@ else
 
     private class MapasPreviosViewModel
     {
-        public List<MapaViewModel> MapasPrevios { get;set; } 
+        public List<MapaViewModel> MapasPrevios { get; set; } = new List<MapaViewModel>();
     }
 
-    private MapaViewModel Mapa { get; set; } = new();
-    private MapasPreviosViewModel MapasPrevios { get; set; } = new();
+    private MapaViewModel mapaView { get; set; } = new();
+    private MapaActual[]? mapasPrevios;
+    private MapasPreviosViewModel mapasPreviosView { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
+        //Esto revisa si hay un mapa actual y lo muestra en primera plana
         using var db = DbFactory.CreateDbContext();
 
-        MapaActual? mapa = await db.Mapas.SingleOrDefaultAsync();
+        MapaActual? mapaActual = await db.Mapas.Where(c => c.Actual == true).SingleOrDefaultAsync();
 
-        if (mapa is not null)
+        if (mapaActual is not null)
         {
-            Mapa.Base64 = mapa.MapaBase64;
-            Mapa.Tipo = mapa.Tipo;
-            Mapa.Nombre = mapa.Nombre;
+            mapaView.Base64 = mapaActual.MapaBase64;
+            mapaView.Tipo = mapaActual.Tipo;
+            mapaView.Nombre = mapaActual.Nombre;
+        }
+
+        //Esto busca todos los mapas que no sean actuales en la base de datos y los guarda en una lista de mapas previos para la vista
+        mapasPrevios = await db.Mapas.Where(c => c.Actual == false).ToArrayAsync();
+
+        foreach(var mapaPrevio in mapasPrevios)
+        {
+            MapaViewModel mapaViewModel = new MapaViewModel()
+            {
+                Nombre = mapaPrevio.Nombre,
+                Tipo = mapaPrevio.Tipo,
+                Base64 = mapaPrevio.MapaBase64
+            };
+
+            mapasPreviosView.MapasPrevios.Add(mapaViewModel);
         }
     }
 
+    //Este metodo "Guardar" guarda lo que se ingresa desde la vista en el viewModel pero no lo carga en la base de datos
     private async void Guardar(InputFileChangeEventArgs e)
+    {
+        string mapaBase = await Base64Helper.StreamToBase64(e.File.OpenReadStream());
+
+        mapaView.Base64 = mapaBase;
+        mapaView.Tipo = e.File.ContentType;
+        mapaView.Nombre = e.File.Name;
+    }
+
+    //Este metodo "Rermplazar" busca en la base de datos si ya hay un mapa activo y lo marca como previo o desactualizado y acto seguido sube el actual
+    private async void Reemplazar()
     {
         using var db = DbFactory.CreateDbContext();
 
-        string mapaBase = await Base64Helper.StreamToBase64(e.File.OpenReadStream());
-
-        MapaActual? mapa = await db.Mapas.SingleOrDefaultAsync();
+        MapaActual? mapa = await db.Mapas.Where(c => c.Actual == true).SingleOrDefaultAsync();
 
         if (mapa is not null)
         {
-            mapa.Tipo = e.File.ContentType;
-            mapa.Nombre = e.File.Name;
-            mapa.MapaBase64 = mapaBase;
+            mapa.Actual = false;
         }
-        else
+
+        MapaActual mapaActual = new MapaActual()
         {
-            MapaActual mapaActual = new()
-            {
-                MapaBase64 = mapaBase,
-                Nombre = e.File.Name,
-                Tipo = e.File.ContentType
-            };
+            Tipo = mapaView.Tipo,
+            Nombre = mapaView.Nombre,
+            MapaBase64 = mapaView.Base64,
+            Actual = true
+        };
 
-            db.Mapas.Add(mapaActual);
-        }
+        db.Mapas.Add(mapaActual);
         db.SaveChanges();
-
-        Mapa.Base64 = mapa.MapaBase64;
-        Mapa.Tipo = mapa.Tipo;
-        Mapa.Nombre = mapa.Nombre;
     }
 }
