@@ -2,21 +2,25 @@
 @inject IDbContextFactory<MuseoingContext> DbFactory
 
 
-    <h1>Mapas</h1>
-    <div class="container-fluid">
-    <a class="text-black">Aqui se pueden subir las actualizaciones de los mapas</a>
-    </div>
-    <InputFile OnChange="Guardar" />
-    <button @onclick="Reemplazar">Subir</button>
-    <img class="max" src="data:@mapaView.Tipo;base64,@mapaView.Base64" />
-
-    @if(mapasPreviosView.MapasPrevios is not null)
+<h1>Mapas</h1>
+<div class="container-fluid">
+<a class="text-black">Aqui se pueden subir las actualizaciones de los mapas</a>
+</div>
+<button @onclick="CambiarEstado" hidden=@estado >Cambiar imagen</button>
+<button @onclick="EliminarImagen" >Eliminar imagen actual</button>
+<InputFile OnChange="Guardar" hidden=@(!estado) />
+<button @onclick="Reemplazar" hidden=@(!estado) >Subir</button>
+<img class="max" src="data:@mapaView.Tipo;base64,@mapaView.Base64" />
+<br>
+<br>
+<br>
+@if(mapasPreviosView.MapasPrevios is not null)
+{
+    @foreach (MapaViewModel m in mapasPreviosView.MapasPrevios)
     {
-        @foreach (MapaViewModel m in mapasPreviosView.MapasPrevios)
-        {
-            <img class="max" src="data:@m.Tipo;base64,@m.Base64" />
-        }
+        <img class="max" src="data:@m.Tipo;base64,@m.Base64" />
     }
+}
 
 @code {
 
@@ -35,11 +39,13 @@
     private MapaViewModel mapaView { get; set; } = new();
     private MapaActual[]? mapasPrevios;
     private MapasPreviosViewModel mapasPreviosView { get; set; } = new();
+    private bool estado;
 
     protected override async Task OnInitializedAsync()
     {
         using var db = DbFactory.CreateDbContext();
 
+        estado = false;
         //Esto revisa si hay un mapa actual y lo muestra en primera plana
         MapaActual? mapaActual = await db.Mapas.Where(c => c.Actual == true).SingleOrDefaultAsync();
 
@@ -76,7 +82,7 @@
         mapaView.Nombre = e.File.Name;
     }
 
-    //Este metodo "Rermplazar" busca en la base de datos si ya hay un mapa activo y lo marca como previo o desactualizado y acto seguido sube el actual
+    //Este metodo "Reemplazar" busca en la base de datos si ya hay un mapa activo y lo marca como previo o desactualizado y acto seguido sube el actual
     private async void Reemplazar()
     {
         using var db = DbFactory.CreateDbContext();
@@ -98,5 +104,49 @@
 
         db.Mapas.Add(mapaActual);
         db.SaveChanges();
+
+        mapasPrevios = await db.Mapas.Where(c => c.Actual == false).ToArrayAsync();
+
+        foreach (var mapaPrevio in mapasPrevios)
+        {
+            MapaViewModel mapaViewModel = new MapaViewModel()
+                {
+                    Nombre = mapaPrevio.Nombre,
+                    Tipo = mapaPrevio.Tipo,
+                    Base64 = mapaPrevio.MapaBase64
+                };
+
+            mapasPreviosView.MapasPrevios.Add(mapaViewModel);
+        }
+        CambiarEstado();
+        StateHasChanged();
+    }
+
+    private void CambiarEstado()
+    {
+        estado = !estado;
+    }
+
+    private async void EliminarImagen()
+    {
+        using var db = DbFactory.CreateDbContext();
+
+        MapaActual? mapaActualViejo = await db.Mapas.Where(c => c.Actual == true).SingleOrDefaultAsync();
+
+        if (mapaActualViejo is not null)
+        {
+            db.Remove(mapaActualViejo);
+            MapaActual? mapaActualNuevo = await db.Mapas.LastOrDefaultAsync();
+
+            if (mapaActualNuevo is not null)
+            {
+                mapaActualNuevo.Actual = true;
+            }
+        }
+        db.SaveChanges();
+
+        mapaView = new();
+
+        StateHasChanged();
     }
 }

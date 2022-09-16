@@ -100,5 +100,9 @@ else
 
         db.Stands.Add(standN);
         db.SaveChanges();
+
+        stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Formula1).ToArrayAsync();
+
+        StateHasChanged();
     }
 }
