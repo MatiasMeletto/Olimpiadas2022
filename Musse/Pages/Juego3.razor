@@ -3,25 +3,103 @@
 
 <br />
 <h3> Cuantas veces fue compeon del mundo el piloto Juan Manuel Fangio?</h3>
-<form>
+<br />
+<EditForm EditContext="this.editContext">
     <div class="radio">
-        <input type="radio" name="champ" id="veces2" />
-        <label for="veces2">2 veces</label>
-        <br />
-        <input type="radio" name="champ" id="veces4" />
-        <label for="veces4">4 veces</label>
-        <br />
-        <input type="radio" name="champ" id="veces5" />
-        <label for="veces5">5 veces</label>
-        <br />
-        <input type="radio" name="champ" id="veces6" />
-        <label for="veces6">6 veces</label>
-        <br />
-        <button class="alert-primary" type="submit">Enviar</button>
+        <InputRadioGroup @bind-Value="model.Selected">
+            @foreach (var option in model.Options)
+            {
+                <div>
+                    <InputRadio Value="option.Value" /> @option.Value
+                </div>
+            }
+        </InputRadioGroup>
     </div>
-</form>
-
+</EditForm>
+<button @onclick="Enviar">Enviar</button>
+<br />
+@if (opciones.RespuestaCorrecta is not null)
+{
+    if ((bool)opciones.RespuestaCorrecta == true)
+    {
+        <br />
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill" /></svg>
+            <div>
+                Correcto!
+            </div>
+        </div>
+    }
+    else
+    {
+        <br />
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+            <div>
+                Incorrecto
+            </div>
+        </div>
+    }
+}
 @code {
-    int puntaje = 100;
+    private class OpcionesVM
+    {
+        public bool Opcion1 { get; set; }
+        public bool Opcion2 { get; set; }
+        public bool Opcion3 { get; set; }
+        public bool Opcion4 { get; set; }
+        public bool? RespuestaCorrecta { get; set; }
+    }
 
+    private EditContext editContext;
+
+    private class ModelOptions
+    {
+        public string Value { get; set; }
+        public bool Selected
+        {
+            get => _Selected;
+            set
+            {
+                _Selected = value;
+            }
+        }
+        public bool _Selected;
+    }
+
+    private class Model
+    {
+        public string Value { get; set; }
+        public string Selected { get; set; }
+        public List<ModelOptions> Options { get; set; } = new List<ModelOptions>()
+        {
+            new ModelOptions() {Value="2 veces", Selected=true},
+            new ModelOptions() {Value="4 veces", Selected=false},
+            new ModelOptions() {Value="5 veces", Selected=false},
+            new ModelOptions() {Value="6 veces", Selected=false}
+        };
+    }
+
+    private Model model { get; set; }
+    private OpcionesVM opciones { get; set; } = new OpcionesVM();
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = new Model();
+        editContext = new EditContext(model);
+    }
+
+    private async void Enviar()
+    {
+
+        if (model.Selected == "5 veces")
+        {
+            opciones.RespuestaCorrecta = true;
+        }
+        else
+        {
+            opciones.RespuestaCorrecta = false;
+        }
+        StateHasChanged();
+    }
 }

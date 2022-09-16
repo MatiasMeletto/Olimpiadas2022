@@ -6,25 +6,102 @@
 <br />
 <audio src="MotorRallyAudio.mp3" preload="none" controls></audio>
 <br />
-<form>
+<EditForm EditContext="this.editContext">
     <div class="radio">
-        <input type="radio" name="tipomotor" id="F1"/>
-        <label for="F1">F1</label>
-        <br />
-        <input type="radio" name="tipomotor" id="Rally"/>
-        <label for="Rally">Rally</label>
-        <br />
-        <input type="radio" name="tipomotor" id="Deportivo"/>
-        <label for="Deportivo">Deportivo</label>
-        <br />
-        <input type="radio" name="tipomotor" id="Clasico"/>
-        <label for="Clasico">Clasico</label>
-        <br />
-        <button class="alert-primary" type="submit">Enviar</button>
+        <InputRadioGroup @bind-Value="model.Selected">
+            @foreach (var option in model.Options)
+            {
+                <div>
+                    <InputRadio Value="option.Value" /> @option.Value
+                </div>
+            }
+        </InputRadioGroup>
     </div>
-</form>
-
-
+</EditForm>
+<button  @onclick="Enviar">Enviar</button>
+<br />
+@if (opciones.RespuestaCorrecta is not null)
+{
+    if ((bool)opciones.RespuestaCorrecta == true)
+    {
+        <br />
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill" /></svg>
+            <div>
+                Correcto!
+            </div>
+        </div>
+    }
+    else
+    {
+        <br />
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+            <div>
+                Incorrecto
+            </div>
+        </div>
+    }
+}
 @code {
-    
+    private class OpcionesVM
+    {
+        public bool Opcion1 { get; set; }
+        public bool Opcion2 { get; set; }
+        public bool Opcion3 { get; set; }
+        public bool Opcion4 { get; set; }
+        public bool? RespuestaCorrecta { get; set; }
+    }
+
+    private EditContext editContext;
+
+    private class ModelOptions
+    {
+        public string Value { get; set; }
+        public bool Selected
+        {
+            get => _Selected;
+            set
+            {
+                _Selected = value;
+            }
+        }
+        public bool _Selected;
+    }
+
+    private class Model
+    {
+        public string Value { get; set; }
+        public string Selected { get; set; }
+        public List<ModelOptions> Options { get; set; } = new List<ModelOptions>()
+        {
+            new ModelOptions() {Value="F1", Selected=true},
+            new ModelOptions() {Value="Rally", Selected=false},
+            new ModelOptions() {Value="Deportivo", Selected=false},
+            new ModelOptions() {Value="Clasico", Selected=false}
+        };
+    }
+
+    private Model model { get; set; }
+    private OpcionesVM opciones { get; set; } = new OpcionesVM();
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = new Model();
+        editContext = new EditContext(model);
+    }
+
+    private async void Enviar()
+    {
+
+        if(model.Selected == "Rally")
+        {
+            opciones.RespuestaCorrecta = true;
+        }
+        else
+        {
+            opciones.RespuestaCorrecta = false;
+        }
+            StateHasChanged();
+    }
 }
