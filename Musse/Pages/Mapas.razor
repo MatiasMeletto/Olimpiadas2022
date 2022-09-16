@@ -7,10 +7,13 @@
 <a class="text-black">Aqui se pueden subir las actualizaciones de los mapas</a>
 </div>
 <button @onclick="CambiarEstado" hidden=@estado >Cambiar imagen</button>
-<button @onclick="EliminarImagen" >Eliminar imagen actual</button>
+<button @onclick="EliminarImagen" hidden=@estado >Eliminar imagen actual</button>
 <InputFile OnChange="Guardar" hidden=@(!estado) />
 <button @onclick="Reemplazar" hidden=@(!estado) >Subir</button>
-<img class="max" src="data:@mapaView.Tipo;base64,@mapaView.Base64" />
+@if (mapaView.Base64 is not null)
+{
+    <img class="max" src="data:@mapaView.Tipo;base64,@mapaView.Base64"/>
+}
 <br>
 <br>
 <br>
@@ -127,6 +130,21 @@
         estado = !estado;
     }
 
+    private async void CambiarMapaAPrevio()
+    {
+        using var db = DbFactory.CreateDbContext();
+
+        MapaActual? mapaActual = await db.Mapas.Where(c => c.Actual == true).SingleOrDefaultAsync();
+
+        if (mapaActual is not null)
+        {
+            mapaActual.Actual = false;
+        }
+        mapaView = new();
+
+        StateHasChanged();
+    }
+
     private async void EliminarImagen()
     {
         using var db = DbFactory.CreateDbContext();
@@ -136,16 +154,22 @@
         if (mapaActualViejo is not null)
         {
             db.Remove(mapaActualViejo);
-            MapaActual? mapaActualNuevo = await db.Mapas.LastOrDefaultAsync();
+
+            MapaActual? mapaActualNuevo = await db.Mapas.OrderBy(m => m.MapaActualId).LastOrDefaultAsync();
 
             if (mapaActualNuevo is not null)
             {
                 mapaActualNuevo.Actual = true;
+                mapaView.Base64 = mapaActualNuevo.MapaBase64;
+                mapaView.Nombre = mapaActualNuevo.Nombre;
+                mapaView.Tipo = mapaActualNuevo.Tipo;
+            }
+            else
+            {
+                mapaView = new();
             }
         }
         db.SaveChanges();
-
-        mapaView = new();
 
         StateHasChanged();
     }
