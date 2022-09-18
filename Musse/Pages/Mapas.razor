@@ -6,13 +6,18 @@
 <div class="container-fluid">
 <a class="text-black">Aqui se pueden subir las actualizaciones de los mapas</a>
 </div>
-<button @onclick="CambiarEstado" hidden=@estado >Cambiar imagen</button>
-<button @onclick="EliminarImagen" hidden=@estado >Eliminar imagen actual</button>
-<InputFile OnChange="Guardar" hidden=@(!estado) />
-<button @onclick="Reemplazar" hidden=@(!estado) >Subir</button>
+<button @onclick="CambiarEstado" hidden=@cargandoImagen >Subir/Cambiar imagen</button>
+@if (cargandoImagen)
+{
+    <button @onclick="EliminarImagen" disabled="@existeMapa">Eliminar imagen actual</button>
+    <InputFile OnChange="Guardar" />
+    <button @onclick="Reemplazar" >Subir</button>
+}
 @if (mapaView.Base64 is not null)
 {
-    <img class="max" src="data:@mapaView.Tipo;base64,@mapaView.Base64"/>
+    <br>
+    <br>
+    <img class="max" src="data:@mapaView.Tipo;base64,@mapaView.Base64" hidden="@existeMapa" />
 }
 <br>
 <br>
@@ -42,14 +47,16 @@
     private MapaViewModel mapaView { get; set; } = new();
     private MapaActual[]? mapasPrevios;
     private MapasPreviosViewModel mapasPreviosView { get; set; } = new();
-    private bool estado;
+    private bool cargandoImagen;
+    private bool existeMapa;
 
     protected override async Task OnInitializedAsync()
-    {
+    { 
+        cargandoImagen = false;
+
         using var db = DbFactory.CreateDbContext();
 
-        estado = false;
-        //Esto revisa si hay un mapa actual y lo muestra en primera plana
+        //Esto revisa si hay un mapa actual, lo muestra en primera plana e indica mediante la variable "existeMapa" que existe(la cual despues se usa para deshabilitar el boton eliminar en vista)
         MapaActual? mapaActual = await db.Mapas.Where(c => c.Actual == true).SingleOrDefaultAsync();
 
         if (mapaActual is not null)
@@ -57,6 +64,11 @@
             mapaView.Base64 = mapaActual.MapaBase64;
             mapaView.Tipo = mapaActual.Tipo;
             mapaView.Nombre = mapaActual.Nombre;
+            existeMapa = false;
+        }
+        else
+        {
+            existeMapa = true;
         }
 
         //Esto busca todos los mapas que no sean actuales en la base de datos y los guarda en una lista de mapas previos para la vista
@@ -113,36 +125,22 @@
         foreach (var mapaPrevio in mapasPrevios)
         {
             MapaViewModel mapaViewModel = new MapaViewModel()
-                {
-                    Nombre = mapaPrevio.Nombre,
-                    Tipo = mapaPrevio.Tipo,
-                    Base64 = mapaPrevio.MapaBase64
-                };
+            {
+                Nombre = mapaPrevio.Nombre,
+                Tipo = mapaPrevio.Tipo,
+                Base64 = mapaPrevio.MapaBase64
+            };
 
             mapasPreviosView.MapasPrevios.Add(mapaViewModel);
         }
         CambiarEstado();
+        existeMapa = false;
         StateHasChanged();
     }
 
     private void CambiarEstado()
     {
-        estado = !estado;
-    }
-
-    private async void CambiarMapaAPrevio()
-    {
-        using var db = DbFactory.CreateDbContext();
-
-        MapaActual? mapaActual = await db.Mapas.Where(c => c.Actual == true).SingleOrDefaultAsync();
-
-        if (mapaActual is not null)
-        {
-            mapaActual.Actual = false;
-        }
-        mapaView = new();
-
-        StateHasChanged();
+        cargandoImagen = !cargandoImagen;
     }
 
     private async void EliminarImagen()
@@ -155,7 +153,7 @@
         {
             db.Remove(mapaActualViejo);
 
-            MapaActual? mapaActualNuevo = await db.Mapas.OrderBy(m => m.MapaActualId).LastOrDefaultAsync();
+            MapaActual? mapaActualNuevo = await db.Mapas.Where(c => c.Actual == false).OrderBy(m => m.MapaActualId).LastOrDefaultAsync();
 
             if (mapaActualNuevo is not null)
             {
@@ -167,10 +165,19 @@
             else
             {
                 mapaView = new();
+                existeMapa = true;
+            }
+        }
+        if (mapasPrevios is not null)
+        {
+            if (mapasPrevios.Count() > 0)
+            {
+                Array.Clear(mapasPrevios, 0, mapasPrevios.Length);
+                mapasPrevios = await db.Mapas.Where(c => c.Actual == false).ToArrayAsync();
             }
         }
         db.SaveChanges();
-
+        CambiarEstado();
         StateHasChanged();
     }
 }
