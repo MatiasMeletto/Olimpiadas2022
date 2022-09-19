@@ -224,6 +224,39 @@ namespace Musse.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Musse.Data.Models.Juego", b =>
+                {
+                    b.Property<int>("JuegoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JuegoId"), 1L, 1);
+
+                    b.Property<string>("Pregunta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RespuestaCorrecta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RespuestaIncorrecta1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RespuestaIncorrecta2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RespuestaIncorrecta3")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("JuegoId");
+
+                    b.ToTable("Juegos");
+                });
+
             modelBuilder.Entity("Musse.Data.Models.MapaActual", b =>
                 {
                     b.Property<int>("MapaActualId")
@@ -252,17 +285,27 @@ namespace Musse.Data.Migrations
                     b.ToTable("Mapas");
                 });
 
-            modelBuilder.Entity("Musse.Data.Models.Recorrido", b =>
+            modelBuilder.Entity("Musse.Data.Models.ResenaComentario", b =>
                 {
-                    b.Property<int>("RecorridoId")
+                    b.Property<int>("ResenaComentarioId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecorridoId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResenaComentarioId"), 1L, 1);
 
-                    b.HasKey("RecorridoId");
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
 
-                    b.ToTable("Recorridos");
+                    b.Property<int>("Nota")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ResenaComentarioString")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ResenaComentarioId");
+
+                    b.ToTable("ResenasComentarios");
                 });
 
             modelBuilder.Entity("Musse.Data.Models.Stand", b =>
@@ -285,15 +328,10 @@ namespace Musse.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RecorridoId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Seccion")
                         .HasColumnType("int");
 
                     b.HasKey("StandId");
-
-                    b.HasIndex("RecorridoId");
 
                     b.ToTable("Stands");
                 });
@@ -347,20 +385,6 @@ namespace Musse.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Musse.Data.Models.Stand", b =>
-                {
-                    b.HasOne("Musse.Data.Models.Recorrido", "Recorrido")
-                        .WithMany("Stands")
-                        .HasForeignKey("RecorridoId");
-
-                    b.Navigation("Recorrido");
-                });
-
-            modelBuilder.Entity("Musse.Data.Models.Recorrido", b =>
-                {
-                    b.Navigation("Stands");
                 });
 #pragma warning restore 612, 618
         }

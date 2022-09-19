@@ -1,13 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Musse.Data.Migrations
 {
-    public partial class Inicial : Migration
+    public partial class inicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Juegos",
+                columns: table => new
+                {
+                    JuegoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Pregunta = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RespuestaCorrecta = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RespuestaIncorrecta1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RespuestaIncorrecta2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RespuestaIncorrecta3 = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Juegos", x => x.JuegoId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Mapas",
                 columns: table => new
@@ -25,15 +43,18 @@ namespace Musse.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Recorridos",
+                name: "ResenasComentarios",
                 columns: table => new
                 {
-                    RecorridoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    ResenaComentarioId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ResenaComentarioString = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Nota = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Recorridos", x => x.RecorridoId);
+                    table.PrimaryKey("PK_ResenasComentarios", x => x.ResenaComentarioId);
                 });
 
             migrationBuilder.CreateTable(
@@ -45,35 +66,27 @@ namespace Musse.Data.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Explicacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Seccion = table.Column<int>(type: "int", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RecorridoId = table.Column<int>(type: "int", nullable: true)
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Stands", x => x.StandId);
-                    table.ForeignKey(
-                        name: "FK_Stands_Recorridos_RecorridoId",
-                        column: x => x.RecorridoId,
-                        principalTable: "Recorridos",
-                        principalColumn: "RecorridoId");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Stands_RecorridoId",
-                table: "Stands",
-                column: "RecorridoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Juegos");
+
+            migrationBuilder.DropTable(
                 name: "Mapas");
 
             migrationBuilder.DropTable(
-                name: "Stands");
+                name: "ResenasComentarios");
 
             migrationBuilder.DropTable(
-                name: "Recorridos");
+                name: "Stands");
         }
     }
 }

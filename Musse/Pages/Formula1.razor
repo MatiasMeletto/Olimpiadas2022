@@ -59,8 +59,8 @@ else
     }
     else
     {
-        <a href="/EditarStand"> <BSButton>Editar</BSButton></a>
-        <select>
+        <a href="/EditarStand"> <BSButton>Editar</BSButton></a> <BSButton @onclick="EliminarStand">Eliminar</BSButton>
+        <select @bind="standAEliminar">
             @foreach (var stand in stands)
             {
                 <option value="@stand.StandId">@stand.Nombre</option>
@@ -81,32 +81,59 @@ else
 
     private StandViewModel stand { get; set; } = new();
     private Stand[]? stands;
+    private int standAEliminar;
 
     protected override async Task OnInitializedAsync()
     {
         using var db = DbFactory.CreateDbContext();
 
-        stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Formula1).ToArrayAsync();
-        stand.Seccion = TipoSeccion.Formula1;
+        stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Rally).ToArrayAsync();
+        stand.Seccion = TipoSeccion.Rally;
     }
 
     private async void CargarStand()
     {
         using var db = DbFactory.CreateDbContext();
 
-        Stand standN = new Stand()
+        if (stand.Nombre is not null)
         {
-            Nombre = stand.Nombre,
-            Explicacion = stand.Explicacion,
-            Seccion = stand.Seccion,
-            Estado = "Activo"
-        };
+            if (stand.Explicacion is not null)
+            {
+                if (stand.Seccion == TipoSeccion.Formula1 || stand.Seccion == TipoSeccion.Exposicion || stand.Seccion == TipoSeccion.Rally)
+                {
+                    Stand standN = new Stand()
+                        {
+                            Nombre = stand.Nombre,
+                            Explicacion = stand.Explicacion,
+                            Seccion = stand.Seccion,
+                            Estado = "Activo"
+                        };
+                    db.Stands.Add(standN);
+                    db.SaveChanges();
+                }
+            }
+        }
 
-        db.Stands.Add(standN);
-        db.SaveChanges();
-
-        stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Formula1).ToArrayAsync();
+        stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Rally).ToArrayAsync();
 
         StateHasChanged();
+    }
+    private async void EliminarStand()
+    {
+        using var db = DbFactory.CreateDbContext();
+
+        if (standAEliminar != 0)
+        {
+            Stand? stand = await db.Stands.Where(c => c.StandId == standAEliminar).SingleOrDefaultAsync();
+
+            if (stand is not null)
+            {
+                db.Remove(stand);
+                db.SaveChanges();
+                stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Rally).ToArrayAsync();
+                StateHasChanged();
+            }
+
+        }
     }
 }
