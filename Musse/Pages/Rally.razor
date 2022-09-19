@@ -50,23 +50,28 @@ else
 <br>
 <br>
 <br>
-<h2>Editar</h2>
-@if (stands == null)
+
+@if (stands is not null)
 {
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <select>
-        @foreach (var stand in stands)
-        {
-            <option value="@stand.StandId">@stand.Nombre</option>
-        }
-    </select>
-    <a href="/EditarStand">Editar(esto deberia ser un button pero no se como se hace)</a>
+    @if (stands.Count() < 1)
+    {
+        <p><em>No hay Stand para editar gracias!</em></p>
+    }
+    else
+    {
+        <a href="/EditarStand"> <BSButton>Editar</BSButton></a> <BSButton @onclick="EliminarStand">Eliminar</BSButton>
+        <select>
+            @foreach (var stand in stands)
+            {
+                <option value="@stand.StandId">@stand.Nombre</option>
+            }
+        </select>
+
+    }
 }
 
 @code {
+
 
     private class StandViewModel
     {
@@ -77,6 +82,7 @@ else
 
     private StandViewModel stand { get; set; } = new();
     private Stand[]? stands;
+    private int standAEliminar;
 
     protected override async Task OnInitializedAsync()
     {
@@ -104,6 +110,23 @@ else
         stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Rally).ToArrayAsync();
 
         StateHasChanged();
+    }
+    private async void EliminarStand()
+    {
+        using var db = DbFactory.CreateDbContext();
+
+        if (standAEliminar != 0)
+        {
+            Stand? stand = await db.Stands.Where(c => c.StandId == standAEliminar).SingleOrDefaultAsync();
+
+            if (stand is not null)
+            {
+                db.Remove(stand);
+                db.SaveChanges();
+                StateHasChanged();
+            }
+
+        }
     }
 }
 

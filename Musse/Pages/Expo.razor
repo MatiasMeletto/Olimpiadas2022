@@ -50,22 +50,25 @@ else
 <br>
 <br>
 <br>
-<h2>Editar</h2>
-@if (stands == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <select>
-        @foreach (var stand in stands)
-        {
-            <option value="@stand.StandId">@stand.Nombre</option>
-        }
-    </select>
-    <a href="/EditarStand">Editar(esto deberia ser un button pero no se como se hace)</a>
-}
 
+@if (stands is not null)
+{
+    @if (stands.Count() < 1)
+    {
+        <p><em>No hay Stand para editar, gracias!</em></p>
+    }
+    else
+    {
+        <a href="/EditarStand"> <BSButton>Editar</BSButton></a>
+        <select>
+            @foreach (var stand in stands)
+            {
+                <option value="@stand.StandId">@stand.Nombre</option>
+            }
+        </select>
+
+    }
+}
 @code {
 
     private class StandViewModel
