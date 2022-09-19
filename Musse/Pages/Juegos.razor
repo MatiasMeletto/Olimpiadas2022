@@ -1,18 +1,34 @@
 ﻿@page "/Juegos"
+@inject IDbContextFactory<MuseoingContext> DbFactory
+
 <h3>Juegos</h3>
 
-<content align-items: center>
-    <a href="/Juego1">Juego 1 <i class="fas fa-angle-double-right"></i></a>
-    <br />
-    <a href="/Juego2">Juego 2 <i class="fas fa-angle-double-right"></i></a>
-    <br />
-    <a href="/Juego3">Juego 3 <i class="fas fa-angle-double-right"></i></a>
-    <br />
-    <a href="/Juego4">Juego 4 <i class="fas fa-angle-double-right"></i></a>
-    <br />
-    <br />
-    <a href="/CrearJuego">Crear juego<i class="fas fa-angle-double-right"></i></a>
-</content>
+<select @bind="id">
+            @foreach (var stand in stands)
+            {
+                <option value="@stand.StandId">@stand.Nombre</option>
+            }
+        </select>
+<br />
+<br />
+<h1>Crear juego</h1>
+
+
 @code {
 
+    private class JuegoViewModel 
+    {
+        public string Pregunta { get; set; }
+        public string RespuestaCorrecta { get; set; }
+        public List<string> RespuestasIncorrectas { get; set; }
+    }
+
+    private JuegoViewModel juego { get; set; }
+    private Juego[]? juegos;
+    private int id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var db = DbFactory.CreateDbContext();
+    }
 }
