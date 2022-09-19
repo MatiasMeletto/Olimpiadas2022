@@ -60,7 +60,7 @@ else
     else
     {
         <a href="/EditarStand"> <BSButton>Editar</BSButton></a> <BSButton @onclick="EliminarStand">Eliminar</BSButton>
-        <select>
+        <select @bind="standAEliminar">
             @foreach (var stand in stands)
             {
                 <option value="@stand.StandId">@stand.Nombre</option>
