@@ -123,6 +123,8 @@ else
             {
                 db.Remove(stand);
                 db.SaveChanges();
+                Array.Clear(stands, 0, stands.Length);
+                stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Rally).ToArrayAsync();
                 StateHasChanged();
             }
 
