@@ -96,16 +96,24 @@ else
     {
         using var db = DbFactory.CreateDbContext();
 
-        Stand standN = new Stand()
+        if(stand.Nombre is not null)
+        {
+            if(stand.Explicacion is not null)
             {
-                Nombre = stand.Nombre,
-                Explicacion = stand.Explicacion,
-                Seccion = stand.Seccion,
-                Estado = "Activo"
-            };
-
-        db.Stands.Add(standN);
-        db.SaveChanges();
+                if (stand.Seccion == TipoSeccion.Formula1 || stand.Seccion == TipoSeccion.Exposicion || stand.Seccion == TipoSeccion.Rally)
+                {
+                    Stand standN = new Stand()
+                    {
+                        Nombre = stand.Nombre,
+                        Explicacion = stand.Explicacion,
+                        Seccion = stand.Seccion,
+                        Estado = "Activo"
+                    };
+                    db.Stands.Add(standN);
+                    db.SaveChanges();
+                }
+            }
+        }
 
         stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Rally).ToArrayAsync();
 
@@ -123,7 +131,6 @@ else
             {
                 db.Remove(stand);
                 db.SaveChanges();
-                Array.Clear(stands, 0, stands.Length);
                 stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Rally).ToArrayAsync();
                 StateHasChanged();
             }
