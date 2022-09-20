@@ -8,9 +8,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Musse", "Musse\Musse.csproj
 		{3C1A7EC7-A881-4BA1-8C01-107970B471CD} = {3C1A7EC7-A881-4BA1-8C01-107970B471CD}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusseCore", "..\..\..\Desktop\MusseCore\MusseCore.csproj", "{3C1A7EC7-A881-4BA1-8C01-107970B471CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusseCore", "MusseCore\MusseCore.csproj", "{3C1A7EC7-A881-4BA1-8C01-107970B471CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusseMovil", "..\..\..\Desktop\MusseMovil\MusseMovil.csproj", "{F0F3A74C-552E-4155-9B1C-7124D6346F17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusseMovil", "MusseMovil\MusseMovil.csproj", "{F0F3A74C-552E-4155-9B1C-7124D6346F17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

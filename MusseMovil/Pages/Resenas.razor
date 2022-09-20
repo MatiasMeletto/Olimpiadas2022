@@ -1,0 +1,39 @@
+﻿@using System.Text.Json
+@using System.Text.Json.Serialization
+@using MusseCore
+@using Enum;
+@using MusseMovil.Services
+@inject IResenaService ResenaService
+@page "/Resenas"
+
+<h3>Resenas</h3>
+<EditForm Model="@Resena" OnValidSubmit="@EnviarComentario">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText @bind-Value=Resena.ResenaComentarioString></InputText>
+    <InputSelect @bind-Value=Resena.Nota>
+        @foreach (var n in Enum.GetNames(typeof(TipoNota)))
+        {
+            <option value="@n">@n</option>
+        }
+    </InputSelect>
+    <button type="submit">Enviar comentario</button>
+</EditForm>
+
+@code {
+    //https://learn.microsoft.com/es-es/aspnet/core/blazor/file-uploads?view=aspnetcore-6.0&pivots=server#upload-files-to-a-server
+
+    private ResenaDTO Resena { get; set; } = new ResenaDTO();
+    private async void EnviarComentario()
+    {
+        if (!string.IsNullOrWhiteSpace(Resena.ResenaComentarioString))
+        {
+            Resena.Fecha = DateTime.Now;
+            await ResenaService.EnviarComentario(Resena);
+            Resena = new ResenaDTO();
+            await ResenaService.RefreshDataAsync();
+            StateHasChanged();
+        }
+    }
+}

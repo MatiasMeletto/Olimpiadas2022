@@ -1,0 +1,20 @@
+﻿@using System.Text.Json
+@using System.Text.Json.Serialization
+@using MusseCore
+@using MusseMovil.Services
+@inject IMapaService MapaService
+@page "/Mapas"
+
+<h3>Mapas</h3>
+@if (MapaService.Mapa is not null)
+{
+    <img class="max" src="data:@MapaService.Mapa.MapaBase64;base64,@MapaService.Mapa.Tipo" />
+}
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await MapaService.RefreshDataAsync();
+    }
+}
