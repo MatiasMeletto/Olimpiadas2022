@@ -1,0 +1,43 @@
+﻿@inject IDbContextFactory<MuseoingContext> DbFactory
+@page "/Resenas"
+<h3>Reseñas</h3>
+@if (resenaComentarios == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var resena in resenaComentarios)
+        {
+            <li>
+                <table>
+                    <tr>
+                        <td>@resena.Nota</td>
+                        <td>@resena.Fecha</td>
+                        <td>@resena.ResenaComentarioString</td>
+                    </tr>
+                </table>
+            </li>
+        }
+    </ul>
+}
+@code {
+
+    private class ResenaViewModel
+    {
+        public string ResenaComentario { get; set; }
+        public DateTime Fecha { get; set; }
+        public TipoNota Nota { get; set; }
+    }
+
+    private ResenaViewModel resenaView { get; set; }
+    private List<ResenaComentario> resenaComentarios = new List<ResenaComentario>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var db = DbFactory.CreateDbContext();
+
+        resenaComentarios = await db.ResenasComentarios.ToListAsync();
+    }
+}
