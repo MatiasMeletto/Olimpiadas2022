@@ -21,8 +21,6 @@ namespace MusseMovil
             builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
             return builder.Build();
-
-        https://learn.microsoft.com/es-es/aspnet/core/blazor/call-web-api?view=aspnetcore-6.0&pivots=server
         }
     }
 }

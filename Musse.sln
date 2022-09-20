@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Musse", "Musse\Musse.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusseMovil", "MusseMovil\MusseMovil.csproj", "{99F206EF-8B14-4F61-A562-138CE36B224A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusseCore", "MusseCore\MusseCore.csproj", "{D6BCD5AD-493F-496F-81F6-6697CFEA5340}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusseCore", "MusseCore\MusseCore.csproj", "{D6BCD5AD-493F-496F-81F6-6697CFEA5340}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusseG", "..\Olimpiadas20222\Musse\MusseG.csproj", "{AE95C5AB-0137-4426-90EF-92E70DE4813F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{D6BCD5AD-493F-496F-81F6-6697CFEA5340}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6BCD5AD-493F-496F-81F6-6697CFEA5340}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6BCD5AD-493F-496F-81F6-6697CFEA5340}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE95C5AB-0137-4426-90EF-92E70DE4813F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE95C5AB-0137-4426-90EF-92E70DE4813F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE95C5AB-0137-4426-90EF-92E70DE4813F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE95C5AB-0137-4426-90EF-92E70DE4813F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

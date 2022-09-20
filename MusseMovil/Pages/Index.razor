@@ -1,7 +1,4 @@
-﻿@using System.Text.Json
-@using System.Text.Json.Serialization
-@inject IHttpClientFactory ClientFactory
-@page "/"
+﻿@page "/"
 
 <PageTitle>Juan Manuel Fangio</PageTitle>
 
@@ -14,7 +11,7 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarResponsive">
 			<ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-				<li class="nav-item"><a class="nav-link" href="#services">Mapa</a></li>
+				<li class="nav-item"><a class="nav-link" href="/Mapas">Mapa</a></li>
 				<li class="nav-item"><a class="nav-link" onclick="    document.getElementById('portfolio').scrollIntoView({behavior:'smooth'})">Formula 1</a></li>
 				<li class="nav-item"><a class="nav-link" onclick="    document.getElementById('about').scrollIntoView({behavior:'smooth'})">Rally</a></li>
 				<li class="nav-item"><a class="nav-link" onclick="    document.getElementById('team').scrollIntoView({behavior:'smooth'})">Expo</a></li>
@@ -852,10 +849,3 @@
 	</div>
 </div>
 
-@code{
-
-	private async void MostrarMapa()
-	{
-		
-	}
-}

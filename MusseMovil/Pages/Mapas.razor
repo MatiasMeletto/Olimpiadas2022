@@ -1,0 +1,44 @@
+﻿@using System.Text.Json
+@using System.Text.Json.Serialization
+@using MusseCore
+@inject IHttpClientFactory ClientFactory
+@page "/Mapas"
+
+<h3>Mapas</h3>
+@if (getBranchesError)
+{
+	<p>Unable to get branches from GitHub. Please try again later.</p>
+}
+else
+{
+	if (mapa is not null)
+	{
+		<img src="data:@mapa.Tipo;base64,@mapa.MapaBase64" alt="Mapa"/>
+	}
+}
+
+@code {
+
+	private MapaDTO mapa;
+	private bool getBranchesError;
+
+	protected override async Task OnInitializedAsync()
+	{
+		using var request = new HttpRequestMessage(HttpMethod.Get,
+			"api/Mapa");
+
+		using var client = ClientFactory.CreateClient();
+
+		var response = await client.SendAsync(request);
+
+		if (response.IsSuccessStatusCode)
+		{
+			using var responseStream = await response.Content.ReadAsStreamAsync();
+			mapa = await JsonSerializer.DeserializeAsync<MapaDTO>(responseStream);
+		}
+		else
+		{
+			getBranchesError = true;
+		}
+	}
+}
