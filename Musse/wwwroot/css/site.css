@@ -100,10 +100,17 @@ a:hover {
 
     background-color: white;
 }
-.max{
-max-height: 720px;
-max-width: 500px;
+.max {
+    max-height: 400px;
+    max-block-size: 400px;
+    max-inline-size: 700px;
 }
 .container-fluid a {
     text-decoration: none !important;
+}
+.maxx {
+    max-height: 100px;
+    max-width: 100px;
+    max-block-size: 100px;
+    max-inline-size: 150px;
 }

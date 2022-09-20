@@ -24,10 +24,12 @@
 <br>
 @if(mapasPreviosView.MapasPrevios is not null)
 {
+    <div class="container-fluid  mb-lg-4 ">
     @foreach (MapaViewModel m in mapasPreviosView.MapasPrevios)
     {
-        <img class="max" src="data:@m.Tipo;base64,@m.Base64" />
+        <img class="maxx" src="data:@m.Tipo;base64,@m.Base64" />
     }
+    </div>
 }
 
 @code {
@@ -120,6 +122,7 @@
         db.Mapas.Add(mapaActual);
         await db.SaveChangesAsync();
 
+        mapasPreviosView.MapasPrevios.Clear();
         mapasPrevios = await db.Mapas.Where(c => c.Actual == false).ToArrayAsync();
 
         foreach (var mapaPrevio in mapasPrevios)
@@ -168,15 +171,23 @@
                 existeMapa = true;
             }
         }
-        if (mapasPrevios is not null)
-        {
-            if (mapasPrevios.Count() > 0)
-            {
-                Array.Clear(mapasPrevios, 0, mapasPrevios.Length);
-                mapasPrevios = await db.Mapas.Where(c => c.Actual == false).ToArrayAsync();
-            }
-        }
+
         await db.SaveChangesAsync();
+
+        mapasPreviosView.MapasPrevios.Clear();
+        mapasPrevios = await db.Mapas.Where(c => c.Actual == false).ToArrayAsync();
+
+        foreach (var mapaPrevio in mapasPrevios)
+        {
+            MapaViewModel mapaViewModel = new MapaViewModel()
+            {
+                Nombre = mapaPrevio.Nombre,
+                Tipo = mapaPrevio.Tipo,
+                Base64 = mapaPrevio.MapaBase64
+            };
+
+            mapasPreviosView.MapasPrevios.Add(mapaViewModel);
+        }
         CambiarEstado();
         StateHasChanged();
     }

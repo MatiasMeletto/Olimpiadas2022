@@ -1,13 +1,20 @@
 ﻿@page "/Formula1"
 @inject IDbContextFactory<MuseoingContext> DbFactory
 
-<h3>Formula1</h3>
-<EditForm Model="stand">
-    Nombre: <input type="text" @bind="stand.Nombre"/>
-    Explicacion: <input type="text" @bind="stand.Explicacion"/>
-</EditForm>
+<h3>Formula 1</h3>
+<div class="container-fluid">
+    <EditForm Model="stand">
+        <div class="col-4 row">
+            Nombre: <input type="text" @bind="stand.Nombre" />
+        </div>
+        <div class="col-4 row">
+            Explicacion: <input type="text" @bind="stand.Explicacion" />
+        </div>
+        <div class="col-4 row"></div>
+    </EditForm>
+    <br>
+</div>
 <button @onclick="CargarStand">Agregar stand</button>
-
 <br>
 <br>
 <br>
@@ -55,7 +62,7 @@ else
 {
     @if (stands.Count() < 1)
     {
-        <p><em>No hay Stand para editar gracias!</em></p>
+        <p>No hay Stand para editar gracias!</p>
     }
     else
     {
