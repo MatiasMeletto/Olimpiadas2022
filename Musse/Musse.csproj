@@ -20,4 +20,8 @@
     <Folder Include="Helpers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Desktop\MusseCore\MusseCore.csproj" />
+  </ItemGroup>
+
 </Project>
