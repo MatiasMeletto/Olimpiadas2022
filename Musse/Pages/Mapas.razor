@@ -118,7 +118,7 @@
         };
 
         db.Mapas.Add(mapaActual);
-        db.SaveChanges();
+        await db.SaveChangesAsync();
 
         mapasPrevios = await db.Mapas.Where(c => c.Actual == false).ToArrayAsync();
 
@@ -176,7 +176,7 @@
                 mapasPrevios = await db.Mapas.Where(c => c.Actual == false).ToArrayAsync();
             }
         }
-        db.SaveChanges();
+        await db.SaveChangesAsync();
         CambiarEstado();
         StateHasChanged();
     }

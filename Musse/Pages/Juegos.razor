@@ -3,32 +3,132 @@
 
 <h3>Juegos</h3>
 
-<select @bind="id">
-            @foreach (var stand in stands)
-            {
-                <option value="@stand.StandId">@stand.Nombre</option>
-            }
-        </select>
+@if (juegos is not null)
+{
+    <select @bind="id">
+        <option selected value="0">-Seleccione un juego-</option>
+        @foreach (var juego in juegos)
+        {
+            <option value="@juego.JuegoId">@juego.Pregunta</option>
+        }
+    </select>
+
+    @if (id > 0)
+    {
+        <br />
+        <br />
+        <h1>@juegoAMostrar.Pregunta</h1>
+        <br />
+        <label>Respuesta correcta: @juegoAMostrar.RespuestaCorrecta</label>
+        <br />
+        <label>Respuesta incorrecta: @juegoAMostrar.RespuestaIncorrecta1</label>
+        <br />
+        <label>Respuesta incorrecta: @juegoAMostrar.RespuestaIncorrecta2</label>
+        <br />
+        <label>Respuesta incorrecta: @juegoAMostrar.RespuestaIncorrecta3</label>
+    }
+}
+else
+{
+    <label>Cacargando..</label>
+}
 <br />
 <br />
 <h1>Crear juego</h1>
-
-
+@if (creando)
+{
+    <label>Pregunta: </label>
+    <input type="text" @bind="juego.Pregunta" />
+    <br />
+    <label>Respuesta correcta: </label>
+    <input type="text" @bind="juego.RespuestaCorrecta" />
+    <br />
+    <label>Respuesta incorrecta: </label>
+    <input type="text" @bind="juego.RespuestaIncorrecta1" />
+    <br />
+    <label>Respuesta incorrecta: </label>
+    <input type="text" @bind="juego.RespuestaIncorrecta2" />
+    <br />
+    <label>Respuesta incorrecta: </label>
+    <input type="text" @bind="juego.RespuestaIncorrecta3" />
+    <br />
+    <button @onclick="Guardar">Crear</button>
+    <button @onclick="@(() => { creando = false; StateHasChanged(); })">Cancelar</button>
+}
+else
+{
+    <button @onclick="@(() => { creando = true; StateHasChanged(); })">Crear</button>
+}
 @code {
 
-    private class JuegoViewModel 
+    private class JuegoViewModel
     {
         public string Pregunta { get; set; }
         public string RespuestaCorrecta { get; set; }
-        public List<string> RespuestasIncorrectas { get; set; }
+        public string RespuestaIncorrecta1 { get; set; }
+        public string RespuestaIncorrecta2 { get; set; }
+        public string RespuestaIncorrecta3 { get; set; }
     }
 
-    private JuegoViewModel juego { get; set; }
+    private bool creando;
+    private JuegoViewModel juego { get; set; } = new();
+    private JuegoViewModel juegoAMostrar { get; set; } = new();
     private Juego[]? juegos;
-    private int id { get; set; }
+    private int _id;
+    private int id
+    {
+        get
+        {
+            return _id;
+        }
+        set
+        {
+            _id = value;
+            using var db = DbFactory.CreateDbContext();
+
+            Juego? juego = db.Juegos.Where(c => c.JuegoId == id).SingleOrDefault();
+
+            if (juego is not null)
+            {
+                juegoAMostrar.RespuestaCorrecta = juego.RespuestaCorrecta;
+                juegoAMostrar.RespuestaIncorrecta1 = juego.RespuestaIncorrecta1;
+                juegoAMostrar.RespuestaIncorrecta2 = juego.RespuestaIncorrecta2;
+                juegoAMostrar.RespuestaIncorrecta3 = juego.RespuestaIncorrecta3;
+                juegoAMostrar.Pregunta = juego.Pregunta;
+            }
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
+        creando = false;
+
         using var db = DbFactory.CreateDbContext();
+
+        juegos = await db.Juegos.ToArrayAsync();
+    }
+
+    private async void Guardar()
+    {
+        using var db = DbFactory.CreateDbContext();
+
+        if (juego is not null)
+        {
+            Juego juegoN = new Juego()
+            {
+                Pregunta = juego.Pregunta,
+                RespuestaCorrecta = juego.RespuestaCorrecta,
+                RespuestaIncorrecta1 = juego.RespuestaIncorrecta1,
+                RespuestaIncorrecta2 = juego.RespuestaIncorrecta2,
+                RespuestaIncorrecta3 = juego.RespuestaIncorrecta3
+            };
+            db.Juegos.Add(juegoN);
+            await db.SaveChangesAsync();
+            juego = new();
+            juegos = await db.Juegos.ToArrayAsync();
+
+            creando = false;
+            StateHasChanged();
+        }
     }
 }

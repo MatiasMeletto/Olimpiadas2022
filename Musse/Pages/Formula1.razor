@@ -109,7 +109,7 @@ else
                             Estado = "Activo"
                         };
                     db.Stands.Add(standN);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
             }
         }
@@ -129,7 +129,7 @@ else
             if (stand is not null)
             {
                 db.Remove(stand);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 stands = await db.Stands.Where(c => c.Seccion == TipoSeccion.Rally).ToArrayAsync();
                 StateHasChanged();
             }
