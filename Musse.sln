@@ -5,7 +5,9 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Musse", "Musse\Musse.csproj", "{08A7D389-EE81-4CEA-B5FF-C2E6549DB661}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusseMovil", "MusseMovil\MusseMovil.csproj", "{99F206EF-8B14-4F61-A562-138CE36B224A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusseMovil", "MusseMovil\MusseMovil.csproj", "{99F206EF-8B14-4F61-A562-138CE36B224A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusseCore", "MusseCore\MusseCore.csproj", "{D6BCD5AD-493F-496F-81F6-6697CFEA5340}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{99F206EF-8B14-4F61-A562-138CE36B224A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99F206EF-8B14-4F61-A562-138CE36B224A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{99F206EF-8B14-4F61-A562-138CE36B224A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{D6BCD5AD-493F-496F-81F6-6697CFEA5340}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6BCD5AD-493F-496F-81F6-6697CFEA5340}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6BCD5AD-493F-496F-81F6-6697CFEA5340}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6BCD5AD-493F-496F-81F6-6697CFEA5340}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

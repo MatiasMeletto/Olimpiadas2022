@@ -16,10 +16,13 @@ namespace MusseMovil
                 });
 
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddHttpClient();
 #if DEBUG
-		builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
             return builder.Build();
+
+        https://learn.microsoft.com/es-es/aspnet/core/blazor/call-web-api?view=aspnetcore-6.0&pivots=server
         }
     }
 }

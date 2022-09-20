@@ -1,4 +1,7 @@
-﻿@page "/"
+﻿@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject IHttpClientFactory ClientFactory
+@page "/"
 
 <PageTitle>Juan Manuel Fangio</PageTitle>
 
@@ -848,3 +851,11 @@
 		</div>
 	</div>
 </div>
+
+@code{
+
+	private async void MostrarMapa()
+	{
+		
+	}
+}
