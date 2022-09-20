@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.WebView.Maui;
 using MusseMovil.Data;
+using MusseMovil.Services;
 
 namespace MusseMovil
 {
@@ -20,6 +21,10 @@ namespace MusseMovil
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
+
+            builder.Services.AddScoped<IMapaService, MapaService>();
+            builder.Services.AddScoped<IResenaService, ResenaService>();
+
             return builder.Build();
         }
     }

@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Desktop\MusseCore\MusseCore.csproj" />
+    <ProjectReference Include="..\MusseCore\MusseCore.csproj" />
   </ItemGroup>
 
 </Project>

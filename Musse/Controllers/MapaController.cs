@@ -21,21 +21,20 @@ namespace Musse.Controllers
 
         // GET: api/<MapaController>
         [HttpGet]
-        public IEnumerable<MapaDTO> Get()
+        public MapaDTO Get()
         {
+            MapaDTO mapaDTO = new MapaDTO();
             MapaActual? mapa = _dbContext.Mapas.Where(m => m.Actual).AsNoTracking().SingleOrDefault();
-            List<MapaDTO> mapasDTO = new List<MapaDTO>();
             if (mapa is not null)
             {
-                MapaDTO mapaDTO = new MapaDTO()
+                mapaDTO = new MapaDTO()
                 {
                     MapaBase64 = mapa.MapaBase64,
                     Tipo = mapa.Tipo,
                     Nombre = mapa.Nombre,
                 };
-                mapasDTO.Add(mapaDTO);
             }
-            return mapasDTO;
+            return mapaDTO;
         }
 
         // GET api/<MapaController>/5
