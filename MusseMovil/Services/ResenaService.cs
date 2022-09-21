@@ -15,7 +15,7 @@ namespace MusseMovil.Services
         HttpClient _client;
         JsonSerializerOptions _serializerOptions;
 
-        private const string restUrl = "localhost:7078/api/Mapa";
+        private const string restUrl = "https://localhost:7078/api/Resenas";
 
         public List<ResenaDTO> Resenas { get; private set; }
 

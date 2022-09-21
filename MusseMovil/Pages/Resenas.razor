@@ -22,7 +22,6 @@
 </EditForm>
 
 @code {
-    //https://learn.microsoft.com/es-es/aspnet/core/blazor/file-uploads?view=aspnetcore-6.0&pivots=server#upload-files-to-a-server
 
     private ResenaDTO Resena { get; set; } = new ResenaDTO();
     private async void EnviarComentario()
@@ -31,9 +30,6 @@
         {
             Resena.Fecha = DateTime.Now;
             await ResenaService.EnviarComentario(Resena);
-            Resena = new ResenaDTO();
-            await ResenaService.RefreshDataAsync();
-            StateHasChanged();
         }
     }
 }
